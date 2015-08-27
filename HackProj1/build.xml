@@ -1,0 +1,77 @@
+<project basedir="." name="JenkinsCIDemo" default="demo">
+<target name="demo" depends="clean,init,iotWeb"/>
+<target name=""iotWeb" depends="BuildIoTWar" />
+
+<property name="PROJECT_HOME" value="${basedir}" />
+<property name="PROJECT_SOURCE_HOME" value="${basedir}/src" />
+<property name="PROJECT_BUILD_HOME" value="${basedir}/build" />
+<property name="PROJECT_BUILD_HOME_TEST" value="${basedir}/build/test" />
+
+<property name="JUNIT_REPORT_DIR" VALUE="${PROJECT_BUILD_HOME}/junitreport" />
+
+<path id="compile.classpath">
+  <fileset dir="${PROJECT_HOME}/WebContent/WEB-INF/lib">
+<include name="*.jar" />
+</fileset>
+</path>
+
+<!-- ==================== JCID BUILD Clean up Starts====================== -->
+
+
+<target name="clean">
+<echo>JCID Cleanup:</echo>
+<delete dir="${PROJECT_HOME}/build" />
+</target>
+
+<!-- ==================== JCID BUILD Clean up ===Ends=================== -->
+
+
+
+<!-- ==================== JCID BUILD Init Starts====================== -->
+
+
+
+<target name="init">
+<echo>JCID Init:</echo>
+<tstamp />
+<mkdir dir="${PROJECT_BUILD_HOME}/jar" />
+<mkdir dir="${PROJECT_BUILD_HOME}/deploy" />
+<mkdir dir="${PROJECT_BUILD_HOME}/reports/xml" />
+<mkdir dir="${PROJECT_BUILD_HOME}/junitreport" />
+</target>
+<!-- ================ JCID BUUILD Init Ends================ -->
+
+
+<!-- ================ JCID BUUID Starts================ -->
+
+<target name="CompileIoTWar">
+ <echo>Compile IoT Source Files: </echo>
+ <tstamp />
+ <mkdir dir="${PROJECT_BUILD_HOME}/classes" />
+ <javac srcdir="${PROJECT_SOURCE_HOME}/" destdir="${PROJECT_BUILD_HOME}/classes" debug="true">
+
+  <classpath refid="compile.classpath" />
+  <!-- <exclude name="**/*Test.java" /> -->
+  </javac>
+  </target>
+
+
+<target name="BuildIoTWar" depends="CompileIoTWar">
+<echo> Build Iot Demo War: </echo>
+<jar destfile="${PROJECT_BUILD_HOME}/jar/iotApp.jar">
+<fileset dir="${PROJECT_BUILD_HOME}/classes" includes="**/*.class" />
+</jar>
+<war destfile="${PROJECT_BUILD_HOME}/deploy/iotApp.war" webxml="${PROJECT_HOME}/WebContent/WEB-INF/web.xml">
+<fileset dir="${PROJECT_HOME}/WebContent">
+<include name="**/*.*" />
+</fileset>
+<lib dir="${PROJECT_BUILD_HOME}/jar/">
+<include name="*.jar" />
+</lib>
+</war>
+</target>
+
+<!-- JUNIT -->
+</project>
+
+
