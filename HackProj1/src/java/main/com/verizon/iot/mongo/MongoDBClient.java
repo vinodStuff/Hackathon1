@@ -1,6 +1,6 @@
 package com.verizon.iot.mongo;
 
-import java.util.Hashmap;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.json.Json;
@@ -34,7 +34,7 @@ public class MongoDBClient {
 		try {
 			initDBConnection();
 		} catch (Exception e) {
-			throw new ExceptioninInitializerError(e);
+			throw new ExceptionInInitializerError("DB connection not created");
 		}
 	}
 
@@ -77,40 +77,40 @@ public class MongoDBClient {
 		try{
 			MongoCollection<Document> collection = mongoDatabase.getCollection(VZIOT_PLAN_MASTER_DB);
 			
-			Document doc = new Docuemnt()
+			Document doc = new Document();
 			doc.put("planId","SMALL");
 			
-			Document.docg = new Document();
+			Document docg = new Document();
 			docg.put("Gadgets", 5.00);
 			docg.put("health", 10.00);
 			docg.put("appliance", 20.00);
 			docg.put("other", 30.00);
 			
-			doc.putProperty(("details", docg);
+			doc.put("details", docg);
 			collection.insertOne(doc);
 			
-			Document doc1 = new Docuemnt()
+			Document doc1 = new Document();
 			doc1.put("planId","MEDIUM");
 			
-			Document.docg1 = new Document();
+			Document docg1 = new Document();
 			docg1.put("Gadgets", 10.00);
 			docg1.put("health", 20.00);
 			docg1.put("appliance", 30.00);
 			docg1.put("other", 40.00);
 			
-			doc1.putProperty(("details", docg1);
+			doc1.put("details", docg1);
 			collection.insertOne(doc1);
 
-			Document doc2 = new Docuemnt()
+			Document doc2 = new Document();
 			doc2.put("planId","LARGE");
 			
-			Document.docg2 = new Document();
+			Document docg2 = new Document();
 			docg2.put("Gadgets", 20.00);
 			docg2.put("health", 30.00);
 			docg2.put("appliance", 40.00);
 			docg2.put("other", 50.00);
 			
-			doc2.putProperty(("details", docg2);
+			doc2.put("details", docg2);
 			collection.insertOne(doc2);
 			
 			System.out.println("Inserted JSON string to database successfully");
@@ -126,9 +126,9 @@ public class MongoDBClient {
 		MongoCursor<Document> cursor = null;
 		Document userUsageDoc = null;
 		try{
-			mongoCollention<Document> collection = mongoDatabase.getCollection(VZIOT_BILLING_DB);
+			MongoCollection<Document> collection = mongoDatabase.getCollection(VZIOT_BILLING_DB);
 			BasicDBObject dbo = new BasicDBObject("userId", userId).append("deviceCategory", deviceCategory);
-			FindIterable<Document> iter = collection.fing(dbo);
+			FindIterable<Document> iter = collection.find(dbo);
 			cursor = iter.iterator();			
 			System.out.println("Fetching document :"+userId);
 			
@@ -152,14 +152,14 @@ public class MongoDBClient {
 		MongoCursor<Document> cursor = null;
 		Document planDoc = null;
 		try{
-			mongoCollention<Document> collection = mongoDatabase.getCollection(VZIOT_PLAN_MASTER_DB);
+			MongoCollection<Document> collection = mongoDatabase.getCollection(VZIOT_PLAN_MASTER_DB);
 			BasicDBObject dbo = new BasicDBObject("planId", planId);
-			FindIterable<Document> iter = collection.fing(dbo);
+			FindIterable<Document> iter = collection.find(dbo);
 			cursor = iter.iterator();			
 			System.out.println("Fetching document for plan id :"+planId);
 			
 			while(cursor.hasNext()){
-				userUsageDoc = cursor.next();
+				planDoc = cursor.next();
 				System.out.println("Row Data = "+ planDoc);
 				break;
 			}
@@ -173,18 +173,18 @@ public class MongoDBClient {
 	}
 
 	
-	public static Document fetchUserPlanId(int userId){
+	public static String fetchUserPlanId(int userId){
 		MongoCursor<Document> cursor = null;
 		Document planDoc = null;
 		try{
-			mongoCollention<Document> collection = mongoDatabase.getCollection(VZIOT_USER_PROFILE_DB);
+			MongoCollection<Document> collection = mongoDatabase.getCollection(VZIOT_USER_PROFILE_DB);
 			BasicDBObject dbo = new BasicDBObject("userId", userId);
-			FindIterable<Document> iter = collection.fing(dbo);
+			FindIterable<Document> iter = collection.find(dbo);
 			cursor = iter.iterator();			
 			System.out.println("Fetching document for userId :"+userId);
 			
 			while(cursor.hasNext()){
-				userUsageDoc = cursor.next();
+				planDoc = cursor.next();
 				System.out.println("Plan Row Data = "+ planDoc);
 				break;
 			}
@@ -199,7 +199,7 @@ public class MongoDBClient {
 	
 	public static void provisionUser(int userId, String planId){
 		try{
-			mongoCollention<Document> collection = mongoDatabase.getCollection(VZIOT_USER_PROFILE_DB);
+			MongoCollection<Document> collection = mongoDatabase.getCollection(VZIOT_USER_PROFILE_DB);
 			System.out.println("User provisioned in DB successfully");
 			UpdateOptions uo = new UpdateOptions();
 			uo.upsert(true);
@@ -214,11 +214,11 @@ public class MongoDBClient {
 		}
 	}
 	
-	public static void insertIntoDataDumpTable(int usesrId, String location, String deviceCategory, double dataVolume){
+	public static void insertIntoDataDumpTable(int userId, String location, String deviceCategory, double dataVolume){
 		try{
 			MongoCollection<Document> collection = mongoDatabase.getCollection(VZIOT_DATA_DUMP_DB);
 			
-			Document doc = new Docuemnt()
+			Document doc = new Document();
 			doc.put("userId",userId);
 			doc.put("location",location);
 			doc.put("deviceCategory",deviceCategory);
@@ -239,7 +239,7 @@ public class MongoDBClient {
 	 * @param paramValue
 	 * @return
 	 */
-	public String fetchCurrentBillData(int userId) {
+	public static String fetchCurrentBillData(int userId) {
 		System.out.println("Fetching Document :" + userId);
 		MongoCursor<Document> cursor = null;
 		JsonArray jarry = Json.createArrayBuilder().build();
@@ -249,7 +249,7 @@ public class MongoDBClient {
 		try {
 			MongoCollection<Document> collection = mongoDatabase.getCollection(VZIOT_BILLING_DB);
 			BasicDBObject dbo = new BasicDBObject("userId", userId);
-			FindIterable<Document> iter = collection.fing(dbo);
+			FindIterable<Document> iter = collection.find(dbo);
 			cursor = iter.iterator();
 
 			String deviceCategory = null;
@@ -257,10 +257,10 @@ public class MongoDBClient {
 			double currentBillAmt = 0.00;
 
 			while (cursor.hasNext()) {
-				Document ddocx = cursor.next();
+				Document docx = cursor.next();
 				deviceCategory = (String) docx.get("deviceCategory");
-				dataVoulume = (double) docx.get("dataVolume");
-				currentBillAmt = (double) docx.get("currentBillAmount");
+				dataVolume = (Double) docx.get("dataVolume");
+				currentBillAmt = (Double) docx.get("currentBillAmount");
 
 				JsonObjectBuilder job = Json.createObjectBuilder();
 				job.add("userId", userId);
@@ -288,7 +288,7 @@ public class MongoDBClient {
 	public static void updateBillData(int userId, String deviceCategory, double dataVolume, double currentBillAmount){
 		MongoCollection<Document> collection = mongoDatabase.getCollection(VZIOT_BILLING_DB);
 		BasicDBObject dbo = new BasicDBObject("userId", userId).append("deviceCategory",deviceCategory);
-		FindIterable<Document> iter = collection.fing(dbo);
+		FindIterable<Document> iter = collection.find(dbo);
 		MongoCursor<Document> cursor = iter.iterator();
 		
 		System.out.println("Fetching document userId = " + userId + " deviceCategory = " + deviceCategory);
@@ -310,7 +310,7 @@ public class MongoDBClient {
 			System.out.println("a = " + a);
 			System.out.println("b = " + b);
 			
-			totAmount = currentBIllAmount + a ;
+			totAmount = currentBillAmount + a ;
 			totData = dataVolume + b;
 		} else {
 			totAmount = currentBillAmount;
@@ -324,7 +324,7 @@ public class MongoDBClient {
 		uo.upsert(true);
 		
 		collection.updateOne(
-				new Document("userId", userId)..append("deviceCategory",deviceCategory),
+				new Document("userId", userId).append("deviceCategory",deviceCategory),
 				new Document("$set", new Document("currentBillAmt", totAmount).append("dataVolume",totData)),
 				uo
 				);	

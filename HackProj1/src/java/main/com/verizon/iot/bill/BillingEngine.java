@@ -20,10 +20,10 @@ public class BillingEngine {
 		
 		double currCharges = 0.00;
 		
-		if ( currentlyUsedDataVolume >= plandoc.getDouble(deviceCategory)){
+		if ( currentlyUsedDataVolume >= planDoc.getDouble(deviceCategory)){
 			dvToCharge = incomingDataVolume;
-		}else if(dvtemp >= plandoc.getDouble(deviceCategory)){
-			dvToCharge = dvtemp - plandoc.getDouble(deviceCategory);
+		}else if(dvtemp >= planDoc.getDouble(deviceCategory)){
+			dvToCharge = dvtemp - planDoc.getDouble(deviceCategory);
 		}
 		
 		if(rateForTheDevice != null){
