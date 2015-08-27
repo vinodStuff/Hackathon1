@@ -91,7 +91,7 @@
 		<tr>
 
 			<td class="tdata">
-				<form action="http://10.76.134.161:9090/WS-V1/rest/gadget">
+				<form>
 					<table border="1">
 						<thead class="theader">
 							<tr>
@@ -117,7 +117,7 @@
 							<td><input type="text" name="dataVolume" id="dataVolume"></td>
 						</tr>
 						<tr>
-							<td align="right"><input type="submit" value="Save"></td>
+							<td align="right"><input type="button" value="Save" id="save"></td>
 							<td><input type="button" value="Reset" id="reset"></td>
 
 						</tr>
